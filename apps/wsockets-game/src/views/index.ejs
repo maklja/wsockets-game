@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header-partial', { title: 'Choose game'}); -%>
+    <body class="bg-gray-100 flex items-center justify-center h-screen">
+        <div class="w-96">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full">
+                <h2 class="text-2xl font-bold mb-4 text-center">
+                    Create new game
+                </h2>
+                <form action="/game" method="post">
+                    <div class="mb-4">
+                        <label
+                            for="gameName"
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            >Game name:</label
+                        >
+                        <input
+                            type="text"
+                            id="gameName"
+                            name="gameName"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label
+                            for="playerName"
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            >Player name:</label
+                        >
+                        <input
+                            type="text"
+                            id="playerName"
+                            name="playerName"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                        >
+                            Create game
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="text-6xl m-6 font-extrabold text-blue-600 text-center">
+                OR
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full">
+                <h2 class="text-2xl font-bold mb-4 text-center">Join game</h2>
+                <form action="/game/join" method="post">
+                    <div class="mb-4">
+                        <label
+                            for="gameKey"
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            >Game key:</label
+                        >
+                        <input
+                            type="text"
+                            id="gameKey"
+                            name="gameKey"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div class="mb-4">
+                        <label
+                            for="joinPlayerName"
+                            class="block text-gray-700 text-sm font-bold mb-2"
+                            >Player name:</label
+                        >
+                        <input
+                            type="text"
+                            id="joinPlayerName"
+                            name="joinPlayerName"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                        >
+                            Join game
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

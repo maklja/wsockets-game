@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header-partial', { title: '404 Not Found'}); -%>
+    <body class="bg-gray-100 h-screen">
+        <h2 class="text-2xl font-bold mb-4 text-center">
+            Game: <%= game.name %>
+        </h2>
+
+        <div class="flex justify-center items-center gap-4 mb-4">
+            <span class="text-xl font-bold text-center">
+                Player: <%= player.name %>
+            </span>
+            <div
+                class="rounded-full w-8 h-8"
+                style="background-color: <%= player.color %>"
+            ></div>
+        </div>
+        <div class="flex flex-col items-center">
+            <% for(let i = 0; i < game.rowN; ++i) { %>
+            <div class="flex gap-0.5 mb-1">
+                <% for(let j = 0; j < game.columnN; ++j) { %>
+                <div
+                    class="bg-gray-300 rounded-lg w-48 h-48 cursor-pointer"
+                ></div>
+                <% } %>
+            </div>
+            <% } %>
+        </div>
+    </body>
+</html>
