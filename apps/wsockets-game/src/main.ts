@@ -1,32 +1,9 @@
 import express from 'express';
 import * as path from 'path';
 import { format } from 'url';
-import { connection } from 'websocket';
 import { setupWebSocketServer } from './setupWebSocketServer';
-import { createGame, retrieveGame } from './game/game.operations';
-
-function handleConnection(conn: connection) {
-    console.log(conn);
-    conn.on('message', (message) => {
-        console.log(message);
-        // if (message.type === 'utf8') {
-        //     console.log('Received Message: ' + message.utf8Data);
-        //     connection.sendUTF(message.utf8Data);
-        // } else if (message.type === 'binary') {
-        //     console.log(
-        //         'Received Binary Message of ' +
-        //             message.binaryData.length +
-        //             ' bytes'
-        //     );
-        //     connection.sendBytes(message.binaryData);
-        // }
-    });
-    conn.on('close', (reasonCode, description) => {
-        // console.log(
-        //     new Date() + ' Peer ' + connection.remoteAddress + ' disconnected.'
-        // );
-    });
-}
+import { createGame, joinGame, retrieveGame } from './game/game.operations';
+import { handleGameConnection } from './handleGameConnection';
 
 const app = express();
 
@@ -66,6 +43,23 @@ app.post('/game', (req, res) => {
     );
 });
 
+app.post('/game/join', (req, res) => {
+    const gameId = joinGame(req.body.gameKey, req.body.joinPlayerName);
+
+    if (!gameId) {
+        return res.redirect('/not-found');
+    }
+
+    res.redirect(
+        format({
+            pathname: `/game/${gameId}`,
+            query: {
+                player: req.body.joinPlayerName,
+            },
+        })
+    );
+});
+
 app.get('/', (_req, res) => {
     res.render('index');
 });
@@ -91,7 +85,7 @@ const url = `http://localhost:${port}`;
 const server = app.listen(port, () => {
     console.log(`Listening at ${url}`);
 });
-const wsServer = setupWebSocketServer(server, handleConnection, [url]);
+const wsServer = setupWebSocketServer(server, handleGameConnection, [url]);
 
 server.on('error', (error) => {
     wsServer.shutDown();

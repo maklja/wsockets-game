@@ -1,30 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('header-partial', { title: '404 Not Found'}); -%>
+    <%- include('header-partial', { title: `Game - ${game.name}` }); -%>
     <body class="bg-gray-100 h-screen">
+        <% if(game.state === 'waiting' && game.players[0].name === player.name){
+        %>
+        <button
+            id="start-button"
+            class="fixed top-6 right-6 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50"
+        >
+            Start
+        </button>
+        <% } %>
+
         <h2 class="text-2xl font-bold mb-4 text-center">
             Game: <%= game.name %>
         </h2>
 
         <div class="flex justify-center items-center gap-4 mb-4">
             <span class="text-xl font-bold text-center">
-                Player: <%= player.name %>
+                Join key: <%= game.id %>
             </span>
-            <div
-                class="rounded-full w-8 h-8"
-                style="background-color: <%= player.color %>"
-            ></div>
         </div>
+
+        <div class="flex flex-col justify-center items-center gap-4 mb-4">
+            <div>Players</div>
+            <div id="players" class="flex gap-4">
+                <div
+                    data-player="<%= player.name %>"
+                    class="flex items-center gap-2"
+                >
+                    <span class="text-sm font-bold text-center">
+                        <%= player.name %>
+                    </span>
+                    <div
+                        class="rounded-full w-4 h-4"
+                        style="background-color: <%= player.color %>"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-col items-center">
             <% for(let i = 0; i < game.rowN; ++i) { %>
             <div class="flex gap-0.5 mb-1">
                 <% for(let j = 0; j < game.columnN; ++j) { %>
                 <div
+                    data-tile="<%= i %>,<%= j %>"
                     class="bg-gray-300 rounded-lg w-48 h-48 cursor-pointer"
                 ></div>
                 <% } %>
             </div>
             <% } %>
         </div>
+
+        <template id="player-template">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-center"> Player name </span>
+                <div class="rounded-full w-4 h-4"></div>
+            </div>
+        </template>
+
+        <script type="text/javascript" src="/assets/game-client.js"></script>
     </body>
 </html>
