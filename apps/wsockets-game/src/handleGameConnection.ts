@@ -10,6 +10,8 @@ import {
     createGameUpdateMessage,
     Messages,
     MessageType,
+    createTimerUpdateMessage,
+    createGameOverMessage,
 } from './messages';
 
 const gameIntervals = new Map<string, NodeJS.Timer>();
@@ -35,6 +37,65 @@ function crateOnlinePlayersInterval(gameId: string) {
     }, 3_000);
 
     gameIntervals.set(gameId, intervalId);
+}
+
+function startGameCountDown(gameId: string) {
+    let timeLeft = 60;
+    const intervalId = setInterval(() => {
+        const gameConns = gameConnections.get(gameId);
+        if (!gameConns) {
+            return;
+        }
+
+        if (timeLeft < 0) {
+            const game = retrieveGame(gameId);
+            game.state = GameState.Ended;
+
+            gameConnections.delete(gameId);
+
+            const scores = game.fields.reduce((result, field) => {
+                if (!field.owned) {
+                    return result;
+                }
+
+                const playerResult = result.get(field.owned) ?? 0;
+                return result.set(field.owned, playerResult + 1);
+            }, new Map<string, number>());
+
+            const winners = [...scores.entries()]
+                .sort(([, score1], [, score2]) => score2 - score1)
+                .reduce(
+                    (
+                        winners: { player: string; score: number }[],
+                        [player, score]
+                    ) => {
+                        if (winners.length === 0) {
+                            return [{ player, score }];
+                        }
+
+                        if (winners[0].score === score) {
+                            return [...winners, { player, score }];
+                        }
+
+                        return winners;
+                    },
+                    []
+                )
+                .map((playerScore) => playerScore.player);
+
+            const gameOverMessage = createGameOverMessage(winners);
+            [...gameConns.values()]
+                .flat()
+                .forEach((conn) => conn.send(gameOverMessage));
+
+            return clearInterval(intervalId);
+        }
+
+        const onlinePlayersMessage = createTimerUpdateMessage(timeLeft--);
+        [...gameConns.values()]
+            .flat()
+            .forEach((conn) => conn.send(onlinePlayersMessage));
+    }, 1_000);
 }
 
 function handleMessage(message: Messages, conn: connection) {
@@ -88,6 +149,7 @@ function handleMessage(message: Messages, conn: connection) {
 
         game.state = GameState.Started;
 
+        startGameCountDown(game.id);
         const gameStartedRespMessage = createGameStartedMessage(game);
         const gameConns =
             gameConnections.get(message.gameId) ??
@@ -131,6 +193,9 @@ function handleCloseConnection(conn: connection) {
                 playerConns.set(player, remConnections);
                 return;
             }
+
+            clearInterval(gameIntervals.get(player));
+            gameIntervals.delete(player);
 
             playerConns.delete(player);
             [...playerConns.entries()]

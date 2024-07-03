@@ -14,6 +14,8 @@ export enum ResponseMessageType {
     PlayerLeft = 'playerLeft',
     OnlinePlayers = 'onlinePlayers',
     UpdateGamePosition = 'updateGamePosition',
+    TimeLeft = 'timeLeft',
+    GameOver = 'gameOver',
 }
 
 export interface StartGameMessage {
@@ -89,5 +91,19 @@ export function createGameUpdateMessage(field: Field) {
     return toBuffer({
         type: ResponseMessageType.UpdateGamePosition,
         field,
+    });
+}
+
+export function createTimerUpdateMessage(timeLeft: number) {
+    return toBuffer({
+        type: ResponseMessageType.TimeLeft,
+        timeLeft,
+    });
+}
+
+export function createGameOverMessage(winners: string[]) {
+    return toBuffer({
+        type: ResponseMessageType.GameOver,
+        winners,
     });
 }

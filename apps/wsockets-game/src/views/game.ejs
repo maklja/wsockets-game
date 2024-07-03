@@ -40,6 +40,21 @@
             </div>
         </div>
 
+        <div
+            id="timer"
+            class="fixed top-6 left-6 text-3xl bg-white px-4 py-2 rounded-full"
+        >
+            60
+        </div>
+
+        <div
+            id="result"
+            style="display: none"
+            class="fixed z-20 h-44 w-80 m-auto inset-x-0 inset-y-0 p-4 bg-white rounded-sm flex justify-center items-center gap-2"
+        >
+            <div class="text-xl">Winner</div>
+        </div>
+
         <div class="flex flex-col items-center">
             <% for(let i = 0; i < game.rowN; ++i) { %>
             <div class="flex gap-0.5 mb-1">

@@ -64,6 +64,20 @@ function handleMessage(message) {
 
         const player = game.players.find((p) => p.name === message.field.owned);
         tile.style.backgroundColor = player.color;
+    } else if (message.type === 'timeLeft') {
+        const timer = document.getElementById('timer');
+        timer.innerText = message.timeLeft;
+    } else if (message.type === 'gameOver') {
+        const resultDialog = document.getElementById('result');
+        if (message.winners.length === 1) {
+            resultDialog.querySelector(
+                'div'
+            ).innerText = `Winner is ${message.winners[0]}`;
+        } else {
+            resultDialog.querySelector('div').innerText = 'Tied';
+        }
+
+        resultDialog.style.display = 'flex';
     }
 }
 
